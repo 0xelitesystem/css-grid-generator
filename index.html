@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Grid Generator</title>
+<meta name="description" content="Visual CSS Grid builder. Set columns, rows, track sizes, and gaps, preview the grid live, name grid areas, and copy the generated display:grid CSS. Runs in your browser.">
+<link rel="canonical" href="https://0xelitesystem.github.io/css-grid-generator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="CSS Grid Generator">
+<meta property="og:description" content="Visual CSS Grid builder. Set columns, rows, track sizes, and gaps, preview the grid live, name grid areas, and copy the generated display:grid CSS.">
+<meta property="og:url" content="https://0xelitesystem.github.io/css-grid-generator/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CSS Grid Generator",
+  "description": "Visual CSS Grid builder. Set columns, rows, track sizes, and gaps, preview the grid live, name grid areas, and copy the generated display:grid CSS.",
+  "url": "https://0xelitesystem.github.io/css-grid-generator/",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any (browser)",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "0xelitesystem",
+    "url": "https://elitesystem.ai"
+  }
+}
+</script>
+<style>
+:root {
+  --bg: #fafaf6;
+  --surface: #ffffff;
+  --ink: #0a1d1e;
+  --ink-soft: #2c4a4c;
+  --rule: #c8d4d3;
+  --teal: #0f5c60;
+  --teal-deep: #0a4548;
+  --gold: #b07d2a;
+  --gold-deep: #8a611f;
+  --ok: #1a5c2e;
+  --err: #8b1a1a;
+  --code-bg: #f0ebe1;
+  --cell: rgba(15, 92, 96, 0.10);
+  --cell-line: rgba(15, 92, 96, 0.35);
+  --area: rgba(176, 125, 42, 0.22);
+}
+[data-theme="dark"] {
+  --bg: #0c1c1d;
+  --surface: #14292a;
+  --ink: #e8ebe6;
+  --ink-soft: #b0c0bd;
+  --rule: #2a4042;
+  --teal: #4ab4ba;
+  --teal-deep: #6dc8ce;
+  --gold: #d4a155;
+  --gold-deep: #e6b876;
+  --ok: #6dd380;
+  --err: #e88080;
+  --code-bg: #0a1718;
+  --cell: rgba(74, 180, 186, 0.12);
+  --cell-line: rgba(74, 180, 186, 0.40);
+  --area: rgba(212, 161, 85, 0.24);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  line-height: 1.55;
+}
+.wrap { max-width: 1200px; margin: 0 auto; }
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 2px solid var(--teal);
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--teal);
+}
+.tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  color: var(--gold-deep);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+[data-theme="dark"] .tag { color: var(--gold); }
+.theme-btn {
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.theme-btn:hover { border-color: var(--teal); color: var(--teal); }
+.lede {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  margin-bottom: 1.75rem;
+  max-width: 72ch;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 1.25rem;
+}
+.panel h2 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 1rem;
+  color: var(--teal);
+}
+.field { margin-bottom: 1rem; }
+label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+input[type="number"], input[type="text"], select {
+  width: 100%;
+  background: var(--code-bg);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  padding: 0.5rem 0.6rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  border-radius: 2px;
+}
+input:focus, select:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.track-row {
+  display: grid;
+  grid-template-columns: auto 1fr 90px auto;
+  gap: 0.4rem;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+.track-row .idx {
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  width: 2.2rem;
+}
+.track-row input[type="number"] { padding: 0.4rem 0.45rem; }
+.track-row select { padding: 0.4rem 0.35rem; }
+.track-row .unit-fixed {
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  text-align: center;
+}
+button {
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--rule);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  border-radius: 2px;
+}
+button:hover { border-color: var(--teal); }
+button.primary {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--surface);
+  font-weight: 600;
+}
+[data-theme="dark"] button.primary { color: var(--bg) !important; }
+button.primary:hover { background: var(--teal-deep); border-color: var(--teal-deep); }
+button.small { padding: 0.3rem 0.55rem; font-size: 0.75rem; }
+.checkbox-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
+.checkbox-row label { margin: 0; text-transform: none; letter-spacing: 0; font-size: 0.85rem; font-weight: 400; color: var(--ink); }
+.checkbox-row input { width: auto; }
+.preview-wrap { background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; padding: 1.25rem; margin-bottom: 1.25rem; }
+.preview-title { font-size: 0.9rem; font-weight: 600; color: var(--teal); margin-bottom: 1rem; }
+#preview {
+  display: grid;
+  gap: 8px;
+  min-height: 260px;
+  background: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--cell) 8px, var(--cell) 9px);
+  padding: 0;
+  border: 1px dashed var(--cell-line);
+  border-radius: 2px;
+}
+.grid-cell {
+  background: var(--cell);
+  border: 1px solid var(--cell-line);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  min-height: 44px;
+  padding: 0.4rem;
+  text-align: center;
+}
+.grid-cell.named { background: var(--area); color: var(--ink); font-weight: 600; }
+.output-wrap { background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; padding: 1.25rem; }
+.output-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; gap: 0.75rem; flex-wrap: wrap; }
+.output-head h2 { font-size: 0.9rem; font-weight: 600; color: var(--teal); }
+pre {
+  background: var(--code-bg);
+  padding: 0.95rem;
+  border-radius: 2px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--ink);
+}
+.copied { color: var(--ok); font-size: 0.8rem; font-weight: 600; }
+.error-msg {
+  color: var(--err);
+  font-size: 0.82rem;
+  padding: 0.6rem;
+  background: var(--code-bg);
+  border-left: 3px solid var(--err);
+  border-radius: 2px;
+  margin-top: 0.6rem;
+}
+.areas-help { font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 0.75rem; }
+.area-row { display: grid; grid-template-columns: 1fr auto auto auto auto auto; gap: 0.4rem; align-items: center; margin-bottom: 0.4rem; }
+.area-row input[type="text"] { padding: 0.4rem 0.45rem; }
+.area-row .lbl { font-size: 0.68rem; color: var(--ink-soft); font-family: ui-monospace, monospace; }
+footer {
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+footer a { color: var(--teal); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+.privacy-note { font-size: 0.78rem; color: var(--gold-deep); margin-top: 0.75rem; }
+[data-theme="dark"] .privacy-note { color: var(--gold); }
+@media (max-width: 640px) {
+  body { padding: 1rem 0.75rem; }
+  h1 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>CSS Grid Generator</h1>
+    <div class="tag">Build a grid, copy the CSS</div>
+  </div>
+  <button class="theme-btn" id="theme-toggle" type="button">Dark</button>
+</header>
+
+<p class="lede">Set your columns, rows, track sizes, and gaps. Watch the grid update live, optionally name a few areas, and copy the generated <code>display: grid</code> rule. Everything runs in your browser.</p>
+
+<div class="layout">
+  <div class="panel">
+    <h2>Controls</h2>
+    <div class="two">
+      <div class="field">
+        <label for="col-count">Columns</label>
+        <input type="number" id="col-count" min="1" max="24" value="3">
+      </div>
+      <div class="field">
+        <label for="row-count">Rows</label>
+        <input type="number" id="row-count" min="1" max="24" value="2">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Column tracks</label>
+      <div id="col-tracks"></div>
+    </div>
+    <div class="field">
+      <label>Row tracks</label>
+      <div id="row-tracks"></div>
+    </div>
+
+    <div class="two">
+      <div class="field">
+        <label for="col-gap">Column gap (px)</label>
+        <input type="number" id="col-gap" min="0" max="200" value="8">
+      </div>
+      <div class="field">
+        <label for="row-gap">Row gap (px)</label>
+        <input type="number" id="row-gap" min="0" max="200" value="8">
+      </div>
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="use-areas">
+      <label for="use-areas">Name and place grid areas</label>
+    </div>
+    <div id="areas-block" style="display:none;">
+      <div class="areas-help">Add up to a few named areas. Each spans a rectangular range of columns and rows (1-based, inclusive). Names must be valid CSS identifiers (letters, digits, <code>-</code>, <code>_</code>).</div>
+      <div id="area-rows"></div>
+      <button class="small" id="add-area" type="button">Add area</button>
+      <div id="area-error"></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="preview-wrap">
+      <div class="preview-title">Live preview</div>
+      <div id="preview"></div>
+    </div>
+
+    <div class="output-wrap">
+      <div class="output-head">
+        <h2>Generated CSS</h2>
+        <div>
+          <button class="primary small" id="copy-btn" type="button">Copy CSS</button>
+          <span class="copied" id="copied-msg" style="display:none;">Copied</span>
+        </div>
+      </div>
+      <pre id="css-out"></pre>
+      <div class="privacy-note">Nothing is uploaded. The CSS is generated locally and never sent anywhere.</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div>CSS Grid Generator. Open source, MIT licensed. <a href="https://github.com/0xelitesystem/css-grid-generator" target="_blank" rel="noopener">View source</a>.</div>
+  <div>Standard CSS Grid Layout output.</div>
+</footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+// Theme toggle
+const themeBtn = $("theme-toggle");
+function setTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  themeBtn.textContent = t === "dark" ? "Light" : "Dark";
+}
+themeBtn.addEventListener("click", () => {
+  const cur = document.documentElement.getAttribute("data-theme") || "light";
+  setTheme(cur === "dark" ? "light" : "dark");
+});
+setTheme(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+const UNITS = ["fr", "px", "%", "em", "rem", "auto", "min-content", "max-content"];
+const NEEDS_VALUE = new Set(["fr", "px", "%", "em", "rem"]);
+
+// State: arrays of track descriptors {value, unit}
+let colTracks = [];
+let rowTracks = [];
+let areas = []; // {name, colStart, colEnd, rowStart, rowEnd}
+
+function clamp(n, lo, hi) { n = parseInt(n, 10); if (isNaN(n)) n = lo; return Math.max(lo, Math.min(hi, n)); }
+
+function defaultTrack() { return { value: 1, unit: "fr" }; }
+
+function syncTrackArray(arr, count) {
+  while (arr.length < count) arr.push(defaultTrack());
+  arr.length = count;
+}
+
+function buildTrackRows(containerId, arr, prefix) {
+  const c = $(containerId);
+  c.innerHTML = "";
+  arr.forEach((t, i) => {
+    const row = document.createElement("div");
+    row.className = "track-row";
+
+    const idx = document.createElement("span");
+    idx.className = "idx";
+    idx.textContent = prefix + (i + 1);
+    row.appendChild(idx);
+
+    const val = document.createElement("input");
+    val.type = "number";
+    val.min = "0";
+    val.step = "0.5";
+    val.value = t.value;
+    val.disabled = !NEEDS_VALUE.has(t.unit);
+    val.addEventListener("input", () => { t.value = val.value; renderAll(); });
+    row.appendChild(val);
+
+    const sel = document.createElement("select");
+    for (const u of UNITS) {
+      const o = document.createElement("option");
+      o.value = u; o.textContent = u;
+      if (u === t.unit) o.selected = true;
+      sel.appendChild(o);
+    }
+    sel.addEventListener("change", () => {
+      t.unit = sel.value;
+      val.disabled = !NEEDS_VALUE.has(t.unit);
+      renderAll();
+    });
+    row.appendChild(sel);
+
+    const spacer = document.createElement("span");
+    spacer.className = "unit-fixed";
+    spacer.textContent = "";
+    row.appendChild(spacer);
+
+    c.appendChild(row);
+  });
+}
+
+function trackToCss(t) {
+  if (!NEEDS_VALUE.has(t.unit)) return t.unit; // auto, min-content, max-content
+  let v = parseFloat(t.value);
+  if (isNaN(v) || v < 0) v = 0;
+  // Trim trailing .0
+  const num = Number.isInteger(v) ? String(v) : String(v);
+  return num + t.unit;
+}
+
+// ---- Grid areas ----
+function isValidIdent(name) {
+  return /^[A-Za-z_][A-Za-z0-9_-]*$/.test(name);
+}
+
+function buildAreaRows() {
+  const c = $("area-rows");
+  c.innerHTML = "";
+  areas.forEach((a, i) => {
+    const row = document.createElement("div");
+    row.className = "area-row";
+
+    const name = document.createElement("input");
+    name.type = "text";
+    name.placeholder = "name";
+    name.value = a.name;
+    name.addEventListener("input", () => { a.name = name.value.trim(); renderAll(); });
+    row.appendChild(name);
+
+    const mk = (label, prop, min) => {
+      const wrap = document.createElement("span");
+      wrap.style.display = "flex";
+      wrap.style.flexDirection = "column";
+      const lbl = document.createElement("span");
+      lbl.className = "lbl";
+      lbl.textContent = label;
+      const inp = document.createElement("input");
+      inp.type = "number";
+      inp.min = String(min);
+      inp.value = a[prop];
+      inp.style.width = "3.4rem";
+      inp.addEventListener("input", () => { a[prop] = parseInt(inp.value, 10); renderAll(); });
+      wrap.appendChild(lbl); wrap.appendChild(inp);
+      return wrap;
+    };
+    row.appendChild(mk("col start", "colStart", 1));
+    row.appendChild(mk("col end", "colEnd", 1));
+    row.appendChild(mk("row start", "rowStart", 1));
+    row.appendChild(mk("row end", "rowEnd", 1));
+
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "small";
+    del.textContent = "Remove";
+    del.style.alignSelf = "end";
+    del.addEventListener("click", () => { areas.splice(i, 1); buildAreaRows(); renderAll(); });
+    row.appendChild(del);
+
+    c.appendChild(row);
+  });
+}
+
+$("add-area").addEventListener("click", () => {
+  if (areas.length >= 8) return;
+  const n = areas.length + 1;
+  areas.push({ name: "area" + n, colStart: 1, colEnd: Math.min(2, colTracks.length), rowStart: 1, rowEnd: 1 });
+  buildAreaRows();
+  renderAll();
+});
+
+$("use-areas").addEventListener("change", () => {
+  const on = $("use-areas").checked;
+  $("areas-block").style.display = on ? "block" : "none";
+  if (on && areas.length === 0) {
+    areas.push({ name: "header", colStart: 1, colEnd: colTracks.length, rowStart: 1, rowEnd: 1 });
+    buildAreaRows();
+  }
+  renderAll();
+});
+
+// Validate areas; returns {ok, message, grid: 2D array of names or null}
+function computeAreaGrid() {
+  const cols = colTracks.length;
+  const rows = rowTracks.length;
+  if (!$("use-areas").checked || areas.length === 0) return { ok: true, grid: null };
+
+  const grid = Array.from({ length: rows }, () => Array(cols).fill(null));
+  const seenNames = new Set();
+
+  for (const a of areas) {
+    if (!a.name) return { ok: false, message: "Every area needs a name." };
+    if (!isValidIdent(a.name)) return { ok: false, message: `"${a.name}" is not a valid CSS identifier.` };
+    if (seenNames.has(a.name)) return { ok: false, message: `Duplicate area name "${a.name}".` };
+    seenNames.add(a.name);
+
+    const cs = clamp(a.colStart, 1, cols), ce = clamp(a.colEnd, 1, cols);
+    const rs = clamp(a.rowStart, 1, rows), re = clamp(a.rowEnd, 1, rows);
+    const c1 = Math.min(cs, ce), c2 = Math.max(cs, ce);
+    const r1 = Math.min(rs, rs === re ? rs : re), r2 = Math.max(rs, re);
+
+    for (let r = r1 - 1; r <= r2 - 1; r++) {
+      for (let cc = c1 - 1; cc <= c2 - 1; cc++) {
+        if (grid[r][cc] !== null && grid[r][cc] !== a.name) {
+          return { ok: false, message: `Areas overlap at column ${cc + 1}, row ${r + 1}.` };
+        }
+        grid[r][cc] = a.name;
+      }
+    }
+  }
+
+  // grid-template-areas requires every cell to be filled; use "." for empties
+  return { ok: true, grid };
+}
+
+function buildCss() {
+  const colGap = clamp($("col-gap").value, 0, 400);
+  const rowGap = clamp($("row-gap").value, 0, 400);
+
+  const colStr = colTracks.map(trackToCss).join(" ");
+  const rowStr = rowTracks.map(trackToCss).join(" ");
+
+  const lines = [];
+  lines.push(".grid {");
+  lines.push("  display: grid;");
+  lines.push("  grid-template-columns: " + colStr + ";");
+  lines.push("  grid-template-rows: " + rowStr + ";");
+  if (rowGap === colGap) {
+    lines.push("  gap: " + rowGap + "px;");
+  } else {
+    lines.push("  gap: " + rowGap + "px " + colGap + "px;");
+  }
+
+  const areaRes = computeAreaGrid();
+  if (areaRes.ok && areaRes.grid) {
+    const rowsStr = areaRes.grid.map(r => '    "' + r.map(c => c || ".").join(" ") + '"').join("\n");
+    lines.push("  grid-template-areas:\n" + rowsStr + ";");
+  }
+  lines.push("}");
+
+  // Emit per-area placement rules
+  if (areaRes.ok && areaRes.grid) {
+    const names = [];
+    for (const a of areas) if (a.name && !names.includes(a.name)) names.push(a.name);
+    for (const n of names) {
+      lines.push("");
+      lines.push("." + n + " { grid-area: " + n + "; }");
+    }
+  }
+
+  return { css: lines.join("\n"), areaRes, colGap, rowGap };
+}
+
+function renderPreview(areaRes, colGap, rowGap) {
+  const cols = colTracks.length;
+  const rows = rowTracks.length;
+  const pv = $("preview");
+  pv.style.gridTemplateColumns = colTracks.map(trackToCss).join(" ");
+  pv.style.gridTemplateRows = rowTracks.map(trackToCss).join(" ");
+  pv.style.columnGap = colGap + "px";
+  pv.style.rowGap = rowGap + "px";
+  pv.style.gridTemplateAreas = "";
+
+  pv.innerHTML = "";
+
+  if (areaRes.ok && areaRes.grid) {
+    // Render one cell per named area (merged) plus plain cells for empties.
+    const rendered = new Set();
+    // Track bounding boxes per name
+    const boxes = {};
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const name = areaRes.grid[r][c];
+        if (name) {
+          if (!boxes[name]) boxes[name] = { r1: r, r2: r, c1: c, c2: c };
+          boxes[name].r1 = Math.min(boxes[name].r1, r);
+          boxes[name].r2 = Math.max(boxes[name].r2, r);
+          boxes[name].c1 = Math.min(boxes[name].c1, c);
+          boxes[name].c2 = Math.max(boxes[name].c2, c);
+        }
+      }
+    }
+    // Empty cells first
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (areaRes.grid[r][c] === null) {
+          const cell = document.createElement("div");
+          cell.className = "grid-cell";
+          cell.style.gridColumn = (c + 1) + " / " + (c + 2);
+          cell.style.gridRow = (r + 1) + " / " + (r + 2);
+          cell.textContent = "";
+          pv.appendChild(cell);
+        }
+      }
+    }
+    // Named area cells
+    for (const name of Object.keys(boxes)) {
+      const b = boxes[name];
+      const cell = document.createElement("div");
+      cell.className = "grid-cell named";
+      cell.style.gridColumn = (b.c1 + 1) + " / " + (b.c2 + 2);
+      cell.style.gridRow = (b.r1 + 1) + " / " + (b.r2 + 2);
+      cell.textContent = name;
+      pv.appendChild(cell);
+    }
+  } else {
+    let n = 1;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const cell = document.createElement("div");
+        cell.className = "grid-cell";
+        cell.textContent = n++;
+        pv.appendChild(cell);
+      }
+    }
+  }
+}
+
+function renderAll() {
+  const colN = clamp($("col-count").value, 1, 24);
+  const rowN = clamp($("row-count").value, 1, 24);
+  syncTrackArray(colTracks, colN);
+  syncTrackArray(rowTracks, rowN);
+  buildTrackRows("col-tracks", colTracks, "col ");
+  buildTrackRows("row-tracks", rowTracks, "row ");
+
+  const { css, areaRes, colGap, rowGap } = buildCss();
+
+  $("area-error").innerHTML = "";
+  if ($("use-areas").checked && !areaRes.ok) {
+    $("area-error").innerHTML = `<div class="error-msg">${escapeHtml(areaRes.message)}</div>`;
+  }
+
+  // Preview uses a valid layout even if areas are invalid: fall back to plain.
+  const previewAreaRes = areaRes.ok ? areaRes : { ok: true, grid: null };
+  renderPreview(previewAreaRes, colGap, rowGap);
+
+  $("css-out").textContent = css;
+}
+
+$("col-count").addEventListener("input", renderAll);
+$("row-count").addEventListener("input", renderAll);
+$("col-gap").addEventListener("input", renderAll);
+$("row-gap").addEventListener("input", renderAll);
+
+$("copy-btn").addEventListener("click", async () => {
+  const text = $("css-out").textContent;
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+    const msg = $("copied-msg");
+    msg.style.display = "inline";
+    setTimeout(() => { msg.style.display = "none"; }, 1500);
+  } catch (e) {
+    const msg = $("copied-msg");
+    msg.textContent = "Copy failed, select manually";
+    msg.style.display = "inline";
+  }
+});
+
+// init
+colTracks = [defaultTrack(), defaultTrack(), defaultTrack()];
+rowTracks = [defaultTrack(), defaultTrack()];
+renderAll();
+</script>
+</body>
+</html>
