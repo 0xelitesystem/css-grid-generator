@@ -312,6 +312,9 @@ footer a:hover { text-decoration: underline; }
 }
 :root { color-scheme: dark; }
 :root[data-theme="light"] { color-scheme: light; }
+
+/* Footer links are underlined so they never rely on colour alone (WCAG 1.4.1). */
+footer a { text-decoration: underline; text-underline-offset: 0.15em; }
 </style>
 </head>
 <body>
@@ -452,10 +455,12 @@ function buildTrackRows(containerId, arr, prefix) {
     val.step = "0.5";
     val.value = t.value;
     val.disabled = !NEEDS_VALUE.has(t.unit);
+    val.setAttribute("aria-label", idx.textContent + " size");
     val.addEventListener("input", () => { t.value = val.value; renderAll(); });
     row.appendChild(val);
 
     const sel = document.createElement("select");
+    sel.setAttribute("aria-label", idx.textContent + " unit");
     for (const u of UNITS) {
       const o = document.createElement("option");
       o.value = u; o.textContent = u;
@@ -502,6 +507,7 @@ function buildAreaRows() {
     const name = document.createElement("input");
     name.type = "text";
     name.placeholder = "name";
+    name.setAttribute("aria-label", "Area " + (i + 1) + " name");
     name.value = a.name;
     name.addEventListener("input", () => { a.name = name.value.trim(); renderAll(); });
     row.appendChild(name);
@@ -518,6 +524,7 @@ function buildAreaRows() {
       inp.min = String(min);
       inp.value = a[prop];
       inp.style.width = "3.4rem";
+      inp.setAttribute("aria-label", "Area " + (i + 1) + " " + label);
       inp.addEventListener("input", () => { a[prop] = parseInt(inp.value, 10); renderAll(); });
       wrap.appendChild(lbl); wrap.appendChild(inp);
       return wrap;
